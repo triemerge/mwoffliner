@@ -193,10 +193,11 @@
       "min": 1
     },
     "speed": {
-      "type": "float",
+      "type": "integer",
       "title": "Speed",
       "required": false,
-      "description": "Multiplicator for the number of parallel HTTP requests on Parsoid backend (default is the number of CPU cores). Reduce on throttled Wikis."
+      "description": "Number of parallel HTTP workers (default: 1). Increase to speed up scraping on capable MediaWiki instances.",
+      "min": 1
     },
     "withoutZimFullTextIndex": {
       "type": "boolean",

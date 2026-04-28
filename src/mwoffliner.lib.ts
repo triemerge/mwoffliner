@@ -6,7 +6,6 @@
 /* ********************************** */
 
 import fs, { readFileSync } from 'fs'
-import os from 'os'
 import pmap from 'p-map'
 import sharp from 'sharp'
 import domino from 'domino'
@@ -20,7 +19,6 @@ import { zimCreatorMutex } from './mutex.js'
 import { check_all } from './sanitize-argument.js'
 
 import {
-  MAX_CPU_CORES,
   MIN_IMAGE_THRESHOLD_ARTICLELIST_PAGE,
   downloadAndSaveModule,
   downloadAndSaveStartupModule,
@@ -136,14 +134,7 @@ async function execute(argv: any) {
     throw new Error(`Admin email [${adminEmail}] is not valid`)
   }
 
-  // TODO: Move it to sanitize method
-  /* Number of parallel requests. To secure stability and avoid HTTP
-  429 errors, no more than MAX_CPU_CORES can be considered */
-  if (_speed && isNaN(_speed)) {
-    throw new Error('speed is not a number, please give a number value to --speed')
-  }
-  const cpuCount = Math.min(os.cpus().length, MAX_CPU_CORES)
-  const speed = Math.max(1, Math.round(cpuCount * (_speed || 1)))
+  const speed = _speed || 1
 
   /* Check Node.js version */
   const nodeVersionSatisfiesPackage = semver.satisfies(process.version, packageJSON.engines.node)

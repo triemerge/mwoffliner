@@ -15,6 +15,7 @@ import { zimCreatorMutex } from '../mutex.js'
 import FileManager from './FileManager.js'
 import { truncateUtf8Bytes } from './misc.js'
 import { isMainPage } from './articles.js'
+import { ARTICLE_REQUEST_INTERVAL } from './const.js'
 
 async function getAllArticlesToKeep(articleDetailXId: RKVS<ArticleDetail>, dump: Dump, articlesRenderer: Renderer) {
   await articleDetailXId.iterateItems(Downloader.speed, async (articleKeyValuePairs) => {
@@ -26,6 +27,7 @@ async function getAllArticlesToKeep(articleDetailXId: RKVS<ArticleDetail>, dump:
         const articleUrl = Downloader.getArticleUrl(articleId, { sectionId: leadSectionId })
 
         rets = await Downloader.getArticle(articleId, articleDetailXId, articlesRenderer, articleUrl, dump, articleDetail)
+        await new Promise((resolve) => setTimeout(resolve, ARTICLE_REQUEST_INTERVAL))
         for (const { articleId, html } of rets) {
           if (!html) {
             continue
@@ -167,6 +169,7 @@ export async function saveArticles(zimCreator: Creator, dump: Dump) {
           const articleUrl = Downloader.getArticleUrl(articleId, { sectionId: leadSectionId })
 
           rets = await Downloader.getArticle(articleId, articleDetailXId, RenderingContext.articlesRenderer, articleUrl, dump, articleDetail)
+          await new Promise((resolve) => setTimeout(resolve, ARTICLE_REQUEST_INTERVAL))
 
           curStage += 1
           for (const {

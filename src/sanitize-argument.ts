@@ -159,8 +159,11 @@ export function sanitizeDoubleUsedParameters(options: object) {
 }
 
 export function sanitize_speed(_speed: any) {
-  if (_speed && isNaN(_speed)) {
-    throw new Error('speed is not a number, please give a number value to --speed.')
+  if (_speed !== undefined && _speed !== null) {
+    const numSpeed = Number(_speed)
+    if (!Number.isInteger(numSpeed) || numSpeed < 1) {
+      throw new Error('speed must be a positive integer (minimum 1). It controls the number of parallel HTTP workers.')
+    }
   }
 }
 
